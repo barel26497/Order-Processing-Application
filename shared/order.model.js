@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
+// Order model
 const orderSchema = new Schema({
     item: { type: String, required: true, trim: true },
     amount: { type: Number, required: true, min: 1 },
