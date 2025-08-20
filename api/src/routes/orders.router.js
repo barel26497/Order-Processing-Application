@@ -1,8 +1,8 @@
-import express from 'express';
-const order = require('../../shared/order.model');
-const publish = require('../rabbit.publish');
+import {Router} from 'express';
+import order from '../../shared/order.model.js';
+import publish from '../rabbit.publish.js';
 
-const router = express.Router();
+const router = Router();
 const RABBITMQ_URL = process.env.RABBITMQ_URL;
 
 function validateRequest(body){
@@ -10,7 +10,7 @@ function validateRequest(body){
     if(!body) return "Request body missing"
 
     //Reject empty, or non-string 'item' values
-    if(body.item.trim() == '' || typeof body.item != "string")
+    if(typeof body.item != "string" || body.item.trim() == '')
         return "item must be a non-empty string"
 
     // Validate that amount is a positive integer
@@ -39,18 +39,21 @@ router.post('/', async (req, res) => {
 
     try {
         //Trying to publish to RabbitMQ
-        await publish(RABBITMQ_URL, { orderId: String(order._id), item, amount });
+        await publish(RABBITMQ_URL, {
+          routingKey: 'orders',
+          payload: { orderId: String(currOrder._id), item, amount }
+        });
       } catch (err) {
         console.error('[API] publish failed:', err.message);
       }
     
     //Sending resonse to the client (201 - Created)
     res.status(201).json({
-        id: String(order._id),
-        item: order.item,
-        amount: order.amount,
-        status: order.status,
-        createdAt: order.createdAt
+        id: String(currOrder._id),
+        item: currOrder.item,
+        amount: currOrder.amount,
+        status: currOrder.status,
+        createdAt: currOrder.createdAt
       });
 });
 
@@ -81,4 +84,4 @@ router.get('/:id', async (req, res) => {
   res.json({ id: String(obj._id), ...obj });
 });
 
-module.exports = router;
+export default router;

@@ -1,13 +1,19 @@
 import amqp from 'amqplib';
 
 // Setting exchange name
-const EX = 'orders';
-//Setting binding Key
-const BK = 'orders.create';
+const EXCHANGE = 'orders';
 
-async function publish(url, payload) {
+//Setting binding Key
+const BINDING_KEY = 'orders.create';
+
+const DEFAULT_QUEUE = 'orders';
+
+
+export default async function publish(url, {queue = DEFAULT_QUEUE, payload}) {
     let connection
     let channel
+
+    if (!payload) throw new Error('payload is required');
 
     try{
         //Creating a channle for RabbitMQ
@@ -15,21 +21,28 @@ async function publish(url, payload) {
         channel = await connection.createChannel();
 
         //Using direct exchange
-        await ch.assertExchange(EX, 'direct', { durable: true });
+        await channel.assertExchange(EXCHANGE, 'direct', { durable: true });
         
+         // Ensure the queue exists
+        await channel.assertQueue(queue, { durable: true });
+
+        await channel.bindQueue(queue, EXCHANGE, BINDING_KEY);
+
         //Publish the message to the "orders" exchange
-        ch.publish(EX, RK, Buffer.from(JSON.stringify(payload)), { persistent: true });
+        channel.publish(EXCHANGE, BINDING_KEY, Buffer.from(JSON.stringify(payload)), { persistent: true });
         
         console.log('[RabbitMQ] Message published');
     } catch(error){
         console.error('[RabbitMQ] Failed to publish message:', error);
     } finally{
         //Closing the channel if it exists
-        if (channel) await ch.close().catch(() => {});
-        //Closing the connection if it exists
-        if (conn) await conn.close().catch(() => {});
+        if (channel) {
+            try { await channel.close(); } catch {}
+          }
+        //Closing the connection if it existsx
+        if (connection) {
+            try { await connection.close(); } catch {}
+          }
     }
 }
-
-module.exports = { publish, EX, BK };
 

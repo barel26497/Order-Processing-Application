@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 
-const connect = require('./db.connect');
-const orders = require('./routes/orders.router');
+import connect from './db.connect.js';
+import orders from './routes/orders.router.js'
 
 async function start(){
     try{

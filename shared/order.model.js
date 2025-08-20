@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-const  Schema  = mongoose;
+const { Schema, model } = mongoose;
 
 // Order model
 const orderSchema = new Schema({
@@ -8,4 +8,5 @@ const orderSchema = new Schema({
     status: { type: String, enum: ['Pending','Processed','Failed'], default: 'Pending' }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Order', orderSchema);
+const Order = mongoose.model('Order', orderSchema);
+export default Order;
