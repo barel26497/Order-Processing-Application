@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 
 import connect from './db.connect.js';
-import orders from './routes/orders.router.js'
+import Order from './routes/orders.router.js'
 
 async function start(){
     try{
@@ -19,7 +19,7 @@ async function start(){
         app.use(express.json());
         
         //Mount routes
-        app.use('/orders', orders);
+        app.use('/orders', Order);
 
         //Start listening
         const port = Number(process.env.PORT || 3001);

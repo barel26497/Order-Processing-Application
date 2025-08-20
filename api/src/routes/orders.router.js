@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import order from '../../shared/order.model.js';
+import Order from '../../shared/order.model.js';
 import publish from '../rabbit.publish.js';
 
 const router = Router();
@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
     const { item, amount } = req.body;
 
     //Save order in MongoDB
-    const currOrder = await order.create({ item, amount, status: 'Pending'}); 
+    const currOrder = await Order.create({ item, amount, status: 'Pending'}); 
 
     try {
         //Trying to publish to RabbitMQ
@@ -64,7 +64,7 @@ router.post('/', async (req, res) => {
  */
 router.get('/', async (_req, res) => {
   //Fetch all orders sorted by newest first, return as plain JS object
-  const orders = await order.find().sort({ createdAt: -1 }).lean();
+  const orders = await Order.find().sort({ createdAt: -1 }).lean();
   res.json(
     orders.map(({ _id, ...rest }) => ({
       id: String(_id),

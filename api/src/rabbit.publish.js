@@ -25,7 +25,8 @@ export default async function publish(url, {queue = DEFAULT_QUEUE, payload}) {
         
          // Ensure the queue exists
         await channel.assertQueue(queue, { durable: true });
-
+        
+        //Binding queue
         await channel.bindQueue(queue, EXCHANGE, BINDING_KEY);
 
         //Publish the message to the "orders" exchange
