@@ -1,6 +1,6 @@
 import amqp from 'amqplib';
 import connect from './db.connect.js';
-import Order from '../../shared/order.model.js';
+import Order from '../shared/order.model.js';
 
 // Setting exchange name
 const EXCHANGE = 'orders';
@@ -26,13 +26,13 @@ async function consumeMessage(channle, msg){
     //if there is no message, exit method
     if(!msg) return;
     try{
-        const { orderID } = JSON.parse(msg.content.toString());
+        const { orderId } = JSON.parse(msg.content.toString());
 
         //Simulate 2 sec proccessing
         await wait(2000);
 
         //Updating the status of the order
-        await Order.findByIdAndUpdate(orderID, { status: 'Processed' });
+        await Order.findByIdAndUpdate(orderId, { status: 'Processed' });
 
         //Sending acknowledgement to RabbitMQ
         channle.ack(msg);
