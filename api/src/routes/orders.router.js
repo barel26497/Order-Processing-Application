@@ -13,9 +13,9 @@ function validateRequest(body){
     if(typeof body.item != "string" || body.item.trim() == '')
         return "item must be a non-empty string"
 
-    // Validate that amount is a positive integer
-    if(!Number.isInteger(body.amount) || body.amount <= 0)
-        return 'amount must be > 0';
+    // Validate that quantity is a positive integer
+    if(!Number.isInteger(body.quantity) || body.quantity <= 0)
+        return 'quantity must be > 0';
 
     //Return null if all OK
     return null;
@@ -32,16 +32,16 @@ router.post('/', async (req, res) => {
     //Return error code 400 - Bad request
     if(err) return res.status(400).json({error: err});
 
-    const { item, amount } = req.body;
+    const { item, quantity } = req.body;
 
     //Save order in MongoDB
-    const currOrder = await Order.create({ item, amount, status: 'Pending'}); 
+    const currOrder = await Order.create({ item, quantity, status: 'Pending'}); 
 
     try {
         //Trying to publish to RabbitMQ
         await publish(RABBITMQ_URL, {
           routingKey: 'orders',
-          payload: { orderId: String(currOrder._id), item, amount }
+          payload: { orderId: String(currOrder._id), item, quantity }
         });
       } catch (err) {
         console.error('[API] publish failed:', err.message);
@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
     res.status(201).json({
         id: String(currOrder._id),
         item: currOrder.item,
-        amount: currOrder.amount,
+        quantity: currOrder.quantity,
         status: currOrder.status,
         createdAt: currOrder.createdAt
       });
