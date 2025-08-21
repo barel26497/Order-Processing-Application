@@ -28,7 +28,9 @@ services:
     ports: ["3001:3001"]
   
   worker:
-    build: ./worker
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
     depends_on: [mongo, rabbitmq]
     environment:
       MONGO_URL: ${MONGO_URL}

@@ -1,6 +1,6 @@
 import amqp from 'amqplib';
-import connect from './db.connect';
-import Order from '../../shared/order.model';
+import connect from './db.connect.js';
+import Order from '../../shared/order.model.js';
 
 // Setting exchange name
 const EXCHANGE = 'orders';
@@ -29,7 +29,7 @@ async function consumeMessage(channle, msg){
         const { orderID } = JSON.parse(msg.content.toString());
 
         //Simulate 2 sec proccessing
-        await delay(2000);
+        await wait(2000);
 
         //Updating the status of the order
         await Order.findByIdAndUpdate(orderID, { status: 'Processed' });
