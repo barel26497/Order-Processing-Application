@@ -5,7 +5,6 @@ import OrderList from "../components/OrdersList";
 export default function App() {
   const { orders, isLoading, errorMessage, addOrder, setError } =
     useOrders(2500);
-  const apiBase = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
   return (
     <main className="container">
@@ -32,10 +31,6 @@ export default function App() {
         </div>
         <OrderList orders={orders} isLoading={isLoading} />
       </section>
-
-      <footer className="page-footer muted">
-        API: <code>{apiBase}</code>
-      </footer>
     </main>
   );
 }
