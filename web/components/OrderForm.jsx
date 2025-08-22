@@ -31,7 +31,7 @@ export default function OrderForm({ onCreate, setGlobalError }) {
         Item
         <input
           className={style.input}
-          placeholder="Cola Zero"
+          placeholder="Enter Item Name"
           value={item}
           onChange={(event) => {
             setItem(event.target.value);

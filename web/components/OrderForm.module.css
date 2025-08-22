@@ -1,6 +1,7 @@
 .form{
-    display:flex; 
-    gap:10px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
 }
 
 .input{
@@ -18,7 +19,7 @@
 }
 
 .slim{
-    max-width:110px;
+    max-width:200px;
 }
 
 .btn{
