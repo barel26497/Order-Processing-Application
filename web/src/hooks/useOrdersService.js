@@ -74,7 +74,7 @@ export function useOrders(pollIntervalMs = 2000) {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
             }
-            intervalRef.current = setInterval(fetchOrders, 2000);
+            intervalRef.current = setInterval(fetchOrders, pollIntervalMs);
         } catch (error){
             console.error('[Orders] delete failed:', error);
             let msg = 'Failed to delete order';
@@ -88,7 +88,7 @@ export function useOrders(pollIntervalMs = 2000) {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
             }
-            intervalRef.current = setInterval(fetchOrders, 2000);
+            intervalRef.current = setInterval(fetchOrders, pollIntervalMs);
         }
     }
 
