@@ -133,6 +133,7 @@ Processed)          │           │   Worker        │
 - **Docker** (version 20.10+)
 - **Docker Compose** (version 2.0+)
 - **Node.js** (version 18+ for local development)
+- Open ports: **3000** (frontend), **3001** (API), **27017** (MongoDB), **5672/15672** (RabbitMQ)
 
 ## 🚀 Quick Start
 
@@ -143,12 +144,7 @@ git clone https://github.com/barel26497/Order-Processing-Application.git order-p
 cd order-processing-app
 ```
 
-### 2. Prerequisites
-
-- Docker Desktop installed and running
-- Make sure ports 3000, 3001, 27017, 5672, 15672 are free.
-
-### 3. Environment Configuration
+### 2. Environment Configuration
 
 Create a `.env` file in the project root:
 
@@ -168,14 +164,14 @@ VITE_API_URL=http://localhost:3001
 CORS_ORIGIN=http://localhost:3000
 ```
 
-### 4. Start the Application
+### 3. Start the Application
 
 ```bash
 # Start the Application in detached mode
 docker compose up --build -d
 ```
 
-### 5. Access the Application
+### 4. Access the Application
 
 - **Frontend**: http://localhost:3000
 - **API**: http://localhost:3001
