@@ -29,6 +29,7 @@ function validateRequest(body){
 router.post('/', async (req, res) => {
     //Check for error in the request body
     const err = validateRequest(req.body);
+
     //Return error code 400 - Bad request
     if(err) return res.status(400).json({error: err});
 
@@ -43,8 +44,8 @@ router.post('/', async (req, res) => {
           routingKey: 'orders',
           payload: { orderId: String(currOrder._id), item, quantity }
         });
-      } catch (err) {
-        console.error('[API] publish failed:', err.message);
+      } catch (error) {
+        console.error('[API] publish failed:', error.message);
       }
     
     //Sending resonse to the client (201 - Created)

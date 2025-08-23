@@ -184,6 +184,7 @@ order-processing-app/
 ├─ .env                           # Environment variables (e.g., MONGO_URL, RABBITMQ_URL, VITE_API_URL)
 ├─ .gitignore                     # Git ignore rules
 ├─ compose.yaml                   # Docker Compose for API, Worker, Web, MongoDB, RabbitMQ
+├─ README.md                      # README file
 ├─ api/                           # HTTP API service (Node + Express)
 │  ├─ Dockerfile                  # Container build for API
 │  ├─ package-lock.json           # Locked dependency versions for reproducible installs
@@ -191,6 +192,7 @@ order-processing-app/
 │  └─ src/                        # API source code
 │     ├─ db.connect.js            # MongoDB connection helper (Mongoose)
 │     ├─ index.js                 # API server entrypoint (Express setup)
+      ├─ rabbit.publish.js        # Used by orders.router.js to Publishes messages to RabbitMQ
 │     └─ routes/                  # Route modules
 │        └─ orders.router.js      # Orders endpoints (CRUD & publish to RabbitMQ)
 ├─ shared/                        # Code shared across services
@@ -243,7 +245,7 @@ order-processing-app/
 - `POST /orders` - Create new order
 - `DELETE /orders/:id` - Delete order
 
-The application provides a user-friendly web interface for creating and managing orders, so you don't need to use these API endpoints directly unless you're building integrations.
+The application provides UI for creating and managing orders, so you don't need to use these API endpoints directly.
 
 ## 🔄 Order Processing Flow
 
