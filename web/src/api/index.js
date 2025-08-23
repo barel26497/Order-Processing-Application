@@ -29,4 +29,23 @@ export async function createOrder(order) {
       return parseJson(response);
 }
 
+export async function deleteOrder(orderId){
+    const res = await fetch(`${API}/orders/${orderId}`, { method: 'DELETE' });
+    if (res.ok) return;
+    let message = `Delete failed (HTTP ${res.status})`;
+    try {
+        const data = await res.json();
+        if (data && typeof data.error === 'string' && data.error) {
+          message = data.error;
+        } else if (data && typeof data.message === 'string' && data.message) {
+          message = data.message;
+        }
+      } catch (error) {
+            console.warn('Failed to parse error JSON:', error);
+      }
+    
+      throw new Error(message);
+    
+} 
+
 

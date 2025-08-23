@@ -1,0 +1,27 @@
+.button {
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border-color: black;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+    background: #D93025;
+    transition: background 120ms ease, box-shadow 120ms ease;
+    justify-content: space-between;
+    margin-left: auto;
+  }
+  
+  .button:hover { background: #f6f6f6; }
+  
+  .button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 120, 255, 0.25);
+  }
+  
+  .busy,
+  .button:disabled {
+    cursor: progress;
+    opacity: 0.6;
+  }
+  

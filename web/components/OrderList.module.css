@@ -25,6 +25,13 @@
     gap:8px;
 }
 
+.deleteButtonContainer {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 .item{
     display:flex; 
     align-items:center; 
@@ -33,6 +40,7 @@
     border:1px solid #232a36; 
     border-radius:12px; 
     background:#0f1217;
+    position: relative;
 }
 
 .main{
@@ -57,6 +65,7 @@
     display:flex; 
     align-items:center; 
     gap:12px;
+    margin-right: 80px;
 }
 
 .time{

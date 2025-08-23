@@ -3,7 +3,7 @@ import OrderForm from "../components/OrderForm";
 import OrderList from "../components/OrdersList";
 
 export default function App() {
-  const { orders, isLoading, errorMessage, addOrder, setError } =
+  const { orders, isLoading, errorMessage, addOrder, removeOrder, setError } =
     useOrders(2500);
 
   return (
@@ -29,7 +29,11 @@ export default function App() {
           <h2>Orders</h2>
           {!isLoading && <span className="muted">{orders.length} total</span>}
         </div>
-        <OrderList orders={orders} isLoading={isLoading} />
+        <OrderList
+          orders={orders}
+          isLoading={isLoading}
+          onDelete={removeOrder}
+        />
       </section>
     </main>
   );

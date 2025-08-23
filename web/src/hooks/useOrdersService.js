@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { listOrders, createOrder } from '../api/index.js';
+import { listOrders, createOrder, deleteOrder } from '../api/index.js';
 
 export function useOrders(pollIntervalMs = 2500) {
     const [orders, setOrders] = useState([]);
@@ -40,6 +40,38 @@ export function useOrders(pollIntervalMs = 2500) {
         await fetchOrders();
     }
 
+    async function removeOrder(id){
+        setOrders(prev => prev.filter(Object => Object.id != id));
+
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+
+        try{
+            await deleteOrder(id);
+            // Restart polling by clearing and setting new interval
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+            intervalRef.current = setInterval(fetchOrders, 2500);
+        } catch (error){
+            console.error('[Orders] delete failed:', error);
+            let msg = 'Failed to delete order';
+            if( error instanceof Error && error.message) {
+                msg = error.message;
+            }
+            setErrorMessage(msg);
+            await fetchOrders();
+            
+            // Restart polling after error
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+            intervalRef.current = setInterval(fetchOrders, 2500);
+        }
+    }
+
     // Effect to start and stop polling orders at a given interval.
     useEffect(function setupPolling() {
         function startPolling() {
@@ -76,6 +108,7 @@ export function useOrders(pollIntervalMs = 2500) {
         errorMessage,
         refresh: fetchOrders,
         addOrder,
+        removeOrder,
         setError: setErrorMessage,
     };
 }

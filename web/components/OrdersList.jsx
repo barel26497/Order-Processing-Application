@@ -1,7 +1,8 @@
 import StatusTag from "./StatusTag.jsx";
+import DeleteButton from "./DeleteButton.jsx";
 import style from "./OrderList.module.css";
 
-export default function OrderList({ orders, isLoading }) {
+export default function OrderList({ orders, isLoading, onDelete }) {
   if (isLoading) {
     return (
       <div className={style.placeholderList}>
@@ -32,6 +33,9 @@ export default function OrderList({ orders, isLoading }) {
               <time className={style.time} datetime={order.createdAt}>
                 {new Date(order.createdAt).toLocaleString()}
               </time>
+            </div>
+            <div className={style.deleteButtonContainer}>
+              <DeleteButton id={order.id} onDelete={onDelete} label="Delete" />
             </div>
           </li>
         );
