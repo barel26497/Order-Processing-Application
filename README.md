@@ -3,7 +3,7 @@
 A microservices-based order management system to demonstrate near real-time order processing with asynchronous background worker.
 The app features a React frontend, Node.js API, MongoDB database, and RabbitMQ message broker for reliable order processing.
 
-## 🚀 Features
+## Features
 
 - **Near Real-time Order Management**: Create, view, and delete orders with near real-time updates (every 2s)
 - **Asynchronous Processing**: Background worker automatically process orders
@@ -12,12 +12,12 @@ The app features a React frontend, Node.js API, MongoDB database, and RabbitMQ m
 - **Message Queue Integration**: RabbitMQ handles order processing reliably
 - **Persistent Storage**: MongoDB stores all order data
 
-## 🏗️ Architecture Diagram
+## Architecture Diagram
 
 See the full diagram here: [Order Processing App Architecture (PDF)](Order-Processing-app-architecture.pdf),
 or find it directly in the root folder of the project.
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Frontend
 
@@ -40,14 +40,14 @@ or find it directly in the root folder of the project.
 - **Mongo Express** - Web-based MongoDB admin UI
 - **Nginx** - Production web server
 
-## 📋 Prerequisites
+## Prerequisites
 
 - **Docker** (version 20.10+)
 - **Docker Compose** (version 2.0+)
 - **Node.js** (version 18+ for local development)
 - Open ports: **3000** (frontend), **3001** (API), **27017** (MongoDB), **5672/15672** (RabbitMQ)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Clone the Repository
 
@@ -106,7 +106,7 @@ docker compose up --build -d
 docker compose down
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 order-processing-app/
@@ -165,7 +165,7 @@ order-processing-app/
 
 ```
 
-## 📊 API Endpoints
+## API Endpoints
 
 ### Orders
 
@@ -176,7 +176,7 @@ order-processing-app/
 
 The application provides UI for creating and managing orders, so you don't need to use these API endpoints directly.
 
-## 🔄 Order Processing Flow
+## Order Processing Flow
 
 1. **Order Creation**: User submits order via web interface
 2. **API Processing**: Backend validates and stores order in MongoDB
@@ -185,7 +185,7 @@ The application provides UI for creating and managing orders, so you don't need 
 5. **Status Update**: Order status updated to "Processed"
 6. **Near Real-time Updates**: Frontend polls for updates every 2 seconds
 
-## 🐳 Docker Configuration
+## Docker Configuration
 
 ### Services
 
