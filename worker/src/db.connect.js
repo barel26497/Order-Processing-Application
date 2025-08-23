@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 
-//Helper method for connecting worker to MongoDB
+/**
+ * connect
+ * Connects the worker service to MongoDB using MONGO_URL from environment variables.
+ * Throws an error if the URL is missing or the connection fails.
+ */
 async function connect() {
     const url = process.env.MONGO_URL;
     if (!url) {

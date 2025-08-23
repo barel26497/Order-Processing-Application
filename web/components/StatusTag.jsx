@@ -1,5 +1,10 @@
 import style from "./StatusTag.module.css";
 
+/**
+ * StatusTag
+ * Renders a status label with styling based on the order status.
+ * Pending = warning, Processed = ok, otherwise = fail.
+ */
 export default function StatusTag({ status }) {
   const cleanStatus = String(status || "").toLowerCase();
   let statusStyleType;

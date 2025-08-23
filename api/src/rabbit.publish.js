@@ -1,14 +1,17 @@
 import amqp from 'amqplib';
 
-// Setting exchange name
 const EXCHANGE = 'orders';
 
-//Setting binding Key
 const BINDING_KEY = 'orders.create';
 
 const DEFAULT_QUEUE = 'orders';
 
-
+/**
+ * Publish a message to RabbitMQ.
+ * Connects to the broker, ensures the exchange/queue, 
+ * binds them, and sends the payload.
+ * Closes the channel and connection afterward.
+ */
 export default async function publish(url, {queue = DEFAULT_QUEUE, payload}) {
     let connection
     let channel
@@ -40,7 +43,7 @@ export default async function publish(url, {queue = DEFAULT_QUEUE, payload}) {
         if (channel) {
             try { await channel.close(); } catch {}
           }
-        //Closing the connection if it existsx
+        //Closing the connection if it exists
         if (connection) {
             try { await connection.close(); } catch {}
           }

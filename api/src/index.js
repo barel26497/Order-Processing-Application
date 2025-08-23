@@ -4,6 +4,12 @@ import cors from 'cors';
 import connect from './db.connect.js';
 import Order from './routes/orders.router.js'
 
+/**
+ * Start the API server.
+ * Connects to MongoDB, sets up Express with CORS and JSON parsing,
+ * mounts the /orders routes, and begins listening on the given port.
+ * Exits the process if startup fails.
+ */
 async function start(){
     try{
         //Waiting for DB connection

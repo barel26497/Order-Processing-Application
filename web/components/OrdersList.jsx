@@ -2,6 +2,12 @@ import StatusTag from "./StatusTag.jsx";
 import DeleteButton from "./DeleteButton.jsx";
 import style from "./OrderList.module.css";
 
+/**
+ * OrderList
+ * Renders a list of orders with their item, quantity, status, and timestamp.
+ * Shows loading placeholders or an empty message when needed.
+ * Includes a delete button for each order.
+ */
 export default function OrderList({ orders, isLoading, onDelete }) {
   if (isLoading) {
     return (

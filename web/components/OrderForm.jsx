@@ -6,6 +6,11 @@ export default function OrderForm({ onCreate, setGlobalError }) {
   const [quantity, setQuantity] = useState(1);
   const [submit, setSubmit] = useState(false);
 
+  /**
+   * OrderForm
+   * Renders a form to create a new order with item and quantity.
+   * Handles form submission, resets fields, and shows errors if creation fails.
+   */
   async function handleSubmit(event) {
     //Disable browser default behavior when submitting a form.
     event.preventDefault();

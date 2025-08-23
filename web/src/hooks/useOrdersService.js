@@ -1,13 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 import { listOrders, createOrder, deleteOrder } from '../api/index.js';
 
-export function useOrders(pollIntervalMs = 2500) {
+/**
+ * useOrders
+ * Custom React hook to manage orders with polling.
+ * Provides fetching, creating, and deleting orders, plus error handling.
+ * Returns an object with orders, loading state, error message, and helper methods.
+ */
+export function useOrders(pollIntervalMs = 2000) {
     const [orders, setOrders] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
     const intervalRef = useRef(null);
 
-    // Fetch all orders from the backend API and update state.
+    /**
+     * fetchOrders
+     * Fetch all orders from the API and update local state.
+     * Clears error messages on success, sets error state on failure.
+     */
     async function fetchOrders(){
         try{
             const data = await listOrders();
@@ -24,7 +34,11 @@ export function useOrders(pollIntervalMs = 2500) {
         }
     }
 
-    // Add a new order by sending item and quantity to the backend.
+    /**
+     * addOrder
+     * Validate item and quantity before creating a new order.
+     * Calls the API and refreshes the order list after success.
+     */
     async function addOrder({ item, quantity }){ 
         const quantityNum = Number(quantity);
 
@@ -40,7 +54,13 @@ export function useOrders(pollIntervalMs = 2500) {
         await fetchOrders();
     }
 
+    /**
+     * removeOrder
+     * Remove an order from state, then call the API to delete it.
+     * Restarts polling whether the delete succeeds or fails, and updates errors if needed.
+     */
     async function removeOrder(id){
+        // remove the order with matching id
         setOrders(prev => prev.filter(Object => Object.id != id));
 
         if (intervalRef.current) {
@@ -54,7 +74,7 @@ export function useOrders(pollIntervalMs = 2500) {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
             }
-            intervalRef.current = setInterval(fetchOrders, 2500);
+            intervalRef.current = setInterval(fetchOrders, 2000);
         } catch (error){
             console.error('[Orders] delete failed:', error);
             let msg = 'Failed to delete order';
@@ -64,16 +84,21 @@ export function useOrders(pollIntervalMs = 2500) {
             setErrorMessage(msg);
             await fetchOrders();
             
-            // Restart polling after error
+            // Restart polling after an error
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
             }
-            intervalRef.current = setInterval(fetchOrders, 2500);
+            intervalRef.current = setInterval(fetchOrders, 2000);
         }
     }
 
-    // Effect to start and stop polling orders at a given interval.
+    /**
+     * setupPolling
+     * Starts polling orders at a fixed interval.
+     * Pauses when the tab is hidden and restarts when visible again.
+     */
     useEffect(function setupPolling() {
+
         function startPolling() {
             if (intervalRef.current) return;
             fetchOrders();

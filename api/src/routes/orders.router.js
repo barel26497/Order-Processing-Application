@@ -5,6 +5,11 @@ import publish from '../rabbit.publish.js';
 const router = Router();
 const RABBITMQ_URL = process.env.RABBITMQ_URL;
 
+/**
+ * Validate an order request body.
+ * Requires: non-empty string `item`, positive integer `quantity`.
+ * returns Error message if invalid, otherwise null
+ */
 function validateRequest(body){
     //Reject bodyless requests
     if(!body) return "Request body missing"
@@ -21,11 +26,11 @@ function validateRequest(body){
     return null;
 }
 
-/** POST /orders
-* Validates the request body, creates a new order,
-* attempts to publish the order to RabbitMQ,
-* and returns the created order details as JSON.
-*/
+/**
+ * Handle POST /orders.
+ * Validates the request, saves a new order in MongoDB,
+ * and tries to publish it to RabbitMQ.
+ */
 router.post('/', async (req, res) => {
     //Check for error in the request body
     const err = validateRequest(req.body);
@@ -59,9 +64,12 @@ router.post('/', async (req, res) => {
 });
 
 /**
- * GET /
- * Fetch all orders from the database.
- * Orders are sorted by newest first.
+ * Handle GET /orders.
+ * Fetches all orders from MongoDB, sorted by newest first,
+ * and returns them as plain JSON.
+ *
+ * Sends:
+ *   - 200 with an array of orders
  */
 router.get('/', async (_req, res) => {
   //Fetch all orders sorted by newest first, return as plain JS object
@@ -85,6 +93,12 @@ router.get('/:id', async (req, res) => {
   res.json({ id: String(obj._id), ...obj });
 });
 
+/**
+ * DELETE /:id
+ * Delete an order by its MongoDB ObjectId.
+ * Returns 404 if the order does not exist.
+ * Returns 204 if deleted successfully.
+ */
 router.delete('/:id', async (req, res) => {
   try{
     const {id} = req.params;

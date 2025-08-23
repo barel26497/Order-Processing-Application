@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 
-//Helper method for connecting API to MongoDB
+/**
+ * Connect to MongoDB using MONGO_URL from environment variables.
+ * Throws an error if MONGO_URL is missing or the connection fails.
+ */
 async function connect() {
     const url = process.env.MONGO_URL;
     if (!url) {

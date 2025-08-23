@@ -2,9 +2,14 @@ import { useOrders } from "./hooks/useOrdersService.js";
 import OrderForm from "../components/OrderForm";
 import OrderList from "../components/OrdersList";
 
+/**
+ * App
+ * Root component of the Order Processing app.
+ * Uses the useOrders hook to manage state and renders the form and list UI.
+ */
 export default function App() {
   const { orders, isLoading, errorMessage, addOrder, removeOrder, setError } =
-    useOrders(2500);
+    useOrders(2000);
 
   return (
     <main className="container">

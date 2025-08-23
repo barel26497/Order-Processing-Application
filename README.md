@@ -1,110 +1,21 @@
 # Order Processing Application
 
-A microservices-based order management system to demonstrate real-time order processing with asynchronous background workers. The app features a React frontend, Node.js API, MongoDB database, and RabbitMQ message broker for reliable order processing.
+A microservices-based order management system to demonstrate near real-time order processing with asynchronous background worker.
+The app features a React frontend, Node.js API, MongoDB database, and RabbitMQ message broker for reliable order processing.
 
 ## 🚀 Features
 
-- **Real-time Order Management**: Create, view, and delete orders with live updates
-- **Asynchronous Processing**: Background workers automatically process orders
-- **Responsive UI**: Clean React interface with real-time status updates
+- **Near Real-time Order Management**: Create, view, and delete orders with near real-time updates (every 2s)
+- **Asynchronous Processing**: Background worker automatically process orders
+- **Responsive UI**: Clean React interface with near real-time status updates
 - **Microservices Architecture**: Containerized services for easy scaling
 - **Message Queue Integration**: RabbitMQ handles order processing reliably
 - **Persistent Storage**: MongoDB stores all order data
 
 ## 🏗️ Architecture Diagram
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                      USER INTERFACE (Vite + React)                              │
-│                               3000 -> :80                                       │
-└─────────────────────────────────────────────────────────────────────────────────┘
-                                        │
-                                        │ uses
-                                        │
-                                        ▼
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           FRONTEND API Client Module                            │
-│                        ┌─────────────────────────┐                              │
-│                        │ • HTTP fetch helpers    │                              │
-│                        │ • JSON parse + errors   │                              │
-│                        │ • Base URL: VITE_API_URL│                              │
-│                        └─────────────────────────┘                              │
-└─────────────────────────────────────────────────────────────────────────────────┘
-                                        │
-                                        │ HTTP Requests (GET/POST/DELETE)
-                                        │ Order data (item, quantity)
-                                        ▼
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           BACKEND API Service                                   │
-│                              Port: 3001                                         │
-│                        ┌─────────────────────────┐                              │
-│                        │ • CORS handling         │                              │
-│                        │ • Data validation       │                              │
-│                        │ • Database operations   │                              │
-│                        │ • Message publishing    │                              │
-│                        └─────────────────────────┘                              │
-└─────────────────────────────────────────────────────────────────────────────────┘
-                                        │
-                        CRUD            │ Publish orders.create
-                    ┌───────────────────┼
-                    │                   │
-                    ▼                   ▼
-        ┌─────────────────┐  ┌─────────────────┐
-        │   MongoDB       │  │   RabbitMQ      │
-        │   Port: 27017   │  │   Port:15672    │
-        │                 │  │                 │
-        │ • Store orders  │  │ • Order queue   │
-        │ • Read orders   │  │ • Message pub   │
-        │ • Update status │  │ • Async proc    │
-        └─────────────────┘  └─────────────────┘
-                    ▲                   │
-Order status        │                   │
-updates             │                   ▼
-(Pending →          │           ┌─────────────────┐
-Processed)          │           │   Worker        │
-                    │           │   (Processor)   │
-                    │           │                 │
-                    │           │ • Consume msgs  │
-                    │           │ • Process orders│
-                    │           │ • Update status │
-                    │           └─────────────────┘
-                    │                   │
-                    │                   │
-                    │                   │
-                    └───────────────────┘
-                                        │
-                                        ▼
-                            ┌─────────────────────────┐
-                            │   Real-time Updates     │
-                            │   (Polling every 2.5s)  │
-                            └─────────────────────────┘
-                                        │
-                                        │ Updated order data
-                                        ▼
-                            ┌─────────────────────────┐
-                            │   Frontend Refresh      │
-                            │   (React state update)  │
-                            └─────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                              SHARED RESOURCES                                   │
-└─────────────────────────────────────────────────────────────────────────────────┘
-                                        │
-                    ┌───────────────────┼───────────────────┐
-                    │                                       │
-                    ▼                                       ▼
-        ┌─────────────────┐                         ┌─────────────────┐
-        │ order.model.js  │                         │ Environment     │
-        │ (Mongoose)      │                         │ Variables       │
-        │                 │                         │                 │
-        │ • Schema def    │                         │ • Database URLs │
-        │ • Validation    │                         │ • API keys      │
-        │ • Timestamps    │                         │ • CORS origins  │
-        └─────────────────┘                         └─────────────────┘
-
-
-
-```
+See the full diagram here: [Order Processing App Architecture (PDF)](Order-Processing-app-architecture.pdf),
+or find it directly in the root folder of the project.
 
 ## 🛠️ Technology Stack
 
@@ -119,7 +30,7 @@ Processed)          │           │   Worker        │
 - **Node.js** - Runtime environment
 - **Express.js** - Web framework
 - **MongoDB** - Database
-- **Mongoose** - MongoDB ODM
+- **Mongoose** - MongoDB ODM (Object Document Mapper; maps JavaScript objects to MongoDB documents)
 
 ### Infrastructure
 
@@ -144,9 +55,17 @@ git clone https://github.com/barel26497/Order-Processing-Application.git order-p
 cd order-processing-app
 ```
 
-### 2. Environment Configuration
+### 2. Make sure you have installed on your machine:
 
-Create a `.env` file in the project root:
+- **Docker** (version 20.10+)
+- **Docker Compose** (version 2.0+)
+- **Node.js** (version 18+ for local development)
+
+Ensure the following ports are available: **3000** (frontend), **3001** (API), **27017** (MongoDB), **5672/15672** (RabbitMQ).
+
+### 3. Environment Configuration
+
+Create a `.env` file in the project root (Copy content below):
 
 ```env
 # MongoDB Configuration
@@ -164,19 +83,25 @@ VITE_API_URL=http://localhost:3001
 CORS_ORIGIN=http://localhost:3000
 ```
 
-### 3. Start the Application
+### 4. Start the Application
 
 ```bash
 # Start the Application in detached mode
 docker compose up --build -d
 ```
 
-### 4. Access the Application
+### 5. Access the Application
 
 - **Frontend**: http://localhost:3000
 - **API**: http://localhost:3001
 - **RabbitMQ Management**: http://localhost:15672 (guest/guestpassword)
 - **MongoDB**: localhost:27017
+
+### 6. Shutting Down
+
+```bash
+docker compose down
+```
 
 ## 📁 Project Structure
 
@@ -255,7 +180,7 @@ The application provides UI for creating and managing orders, so you don't need 
 3. **Message Publishing**: Order details published to RabbitMQ
 4. **Worker Processing**: Background worker consumes and processes order
 5. **Status Update**: Order status updated to "Processed"
-6. **Real-time Updates**: Frontend polls for updates every 2.5 seconds
+6. **Near Real-time Updates**: Frontend polls for updates every 2 seconds
 
 ## 🐳 Docker Configuration
 
@@ -272,17 +197,6 @@ The application provides UI for creating and managing orders, so you don't need 
 - Frontend: 3000 → 80 (container)
 - API: 3001 → 3001 (container)
 - MongoDB: 27017 → 27017 (container)
-- RabbitMQ: 5672 → 5672, 15672 → 15672 (container)
-
-## 🔒 Security Considerations
-
-- **Input Validation**: Both client and server-side validation
-- **CORS Configuration**: Configurable origin restrictions
-- **Database Authentication**: Secure MongoDB access with user credentials
-- **Error Handling**: No sensitive information exposed in error responses
-
-## 📈 Performance & Scalability
-
-- **Containerized Services**: Easy horizontal scaling across multiple instances
-- **Message Queuing**: Asynchronous processing for better throughput
-- **Polling Strategy**: Efficient real-time updates with configurable intervals
+- RabbitMQ:
+  - 5672 → AMQP protocol (used by API and Worker)
+  - 15672 → Management UI (http://localhost:15672)

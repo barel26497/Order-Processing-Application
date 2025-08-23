@@ -1,6 +1,11 @@
 import React from "react";
 import style from "./DeleteButton.module.css";
 
+/**
+ * DeleteButton
+ * Renders a button that asks for confirmation before deleting an order.
+ * Disables itself while the delete action is in progress.
+ */
 export default function DeleteButton(props) {
   var [busy, setBusy] = React.useState(false);
 

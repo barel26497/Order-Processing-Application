@@ -10,18 +10,33 @@ const BINDING_KEY = 'orders.create';
 
 const DEFAULT_QUEUE = 'orders';
 
-//Helper method for setting a delay in ms
+/**
+ * wait
+ * Return a Promise that resolves after the given time in ms.
+ */
 function wait(time){
     return new Promise(resolve => setTimeout(resolve, time));
 }
 
+/**
+ * prepareRabbitChannel
+ * Setup RabbitMQ channel with exchange, queue, and binding.
+ * Ensures durability and sets prefetch to 1.
+ */
 async function prepareRabbitChannel(channel){
     await channel.assertExchange(EXCHANGE, 'direct', { durable: true });
     await channel.assertQueue(DEFAULT_QUEUE, { durable: true });
     await channel.bindQueue(DEFAULT_QUEUE, EXCHANGE, BINDING_KEY);
+
+    //Tell RabbitMQ to Send only ONE message at a time to the worker.
     channel.prefetch(1);
 }
 
+/**
+ * consumeMessage
+ * Process a message from RabbitMQ: parse, simulate work, update order status.
+ * Acknowledge on success; send negative ack if processing fails.
+ */
 async function consumeMessage(channle, msg){
     //if there is no message, exit method
     if(!msg) return;
@@ -43,6 +58,11 @@ async function consumeMessage(channle, msg){
     }
 }
 
+/**
+ * setupShutdown
+ * Gracefully close the RabbitMQ channel and connection on process exit.
+ * Handles SIGINT (Ctrl+C) and SIGTERM (Docker stop).
+ */
 function setupShutdown(connection, channel){
     async function shutdown() {
         try{
@@ -65,6 +85,20 @@ function setupShutdown(connection, channel){
     process.once('SIGTERM', shutdown);
 }
 
+/**
+ * handleFatalError
+ * Log a fatal error and exit the worker process with code 1.
+ */
+function handleFatalError(error) {
+    console.error('[worker] fatal error: ', error);
+    process.exit(1);
+}
+
+/**
+ * start
+ * Connects to MongoDB and RabbitMQ, prepares the channel, and begins consuming messages.
+ * Registers shutdown handling for clean exit.
+ */
 async function start(){
     await connect();
     const connection = await amqp.connect(process.env.RABBITMQ_URL);
@@ -75,9 +109,5 @@ async function start(){
     setupShutdown(connection, channel);
 }
 
-function handleFatalError(error) {
-    console.error('[worker] fatal error: ', error);
-    process.exit(1);
-  }
-
+//Start the worker and handle any fatal startup errors.
 start().catch(handleFatalError);
