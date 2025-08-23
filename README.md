@@ -143,7 +143,12 @@ git clone https://github.com/barel26497/Order-Processing-Application.git order-p
 cd order-processing-app
 ```
 
-### 2. Environment Configuration
+### 2. Prerequisites
+
+- Docker Desktop installed and running
+- Make sure ports 3000, 3001, 27017, 5672, 15672 are free.
+
+### 3. Environment Configuration
 
 Create a `.env` file in the project root:
 
@@ -163,14 +168,14 @@ VITE_API_URL=http://localhost:3001
 CORS_ORIGIN=http://localhost:3000
 ```
 
-### 3. Start the Application
+### 4. Start the Application
 
 ```bash
 # Start the Application in detached mode
 docker compose up --build -d
 ```
 
-### 4. Access the Application
+### 5. Access the Application
 
 - **Frontend**: http://localhost:3000
 - **API**: http://localhost:3001
