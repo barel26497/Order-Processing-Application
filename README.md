@@ -37,6 +37,7 @@ or find it directly in the root folder of the project.
 - **Docker** - Containerization
 - **Docker Compose** - Service orchestration
 - **RabbitMQ** - Message broker
+- **Mongo Express** - Web-based MongoDB admin UI
 - **Nginx** - Production web server
 
 ## 📋 Prerequisites
@@ -68,18 +69,19 @@ Ensure the following ports are available: **3000** (frontend), **3001** (API), *
 Create a `.env` file in the project root (Copy content below):
 
 ```env
-# MongoDB Configuration
-MONGO_USER=root
-MONGO_PASS=example
-MONGO_URL=mongodb://root:example@mongo:27017/?authSource=admin
-
-# RabbitMQ Configuration
 RABBITMQ_USER=guest
 RABBITMQ_PASS=guestpassword
 RABBITMQ_URL=amqp://guest:guestpassword@rabbitmq:5672
 
-# API Configuration
+MONGO_USER=root
+MONGO_PASS=example
+MONGO_URL=mongodb://root:example@mongo:27017/?authSource=admin
+MONGO_EXPRESS_USER=admin
+MONGO_EXPRESS_PASS=pass
+MONGO_EXPRESS_URL=mongodb://root:example@mongo:27017/
+
 VITE_API_URL=http://localhost:3001
+
 CORS_ORIGIN=http://localhost:3000
 ```
 
@@ -94,8 +96,9 @@ docker compose up --build -d
 
 - **Frontend**: http://localhost:3000
 - **API**: http://localhost:3001
-- **RabbitMQ Management**: http://localhost:15672 (guest/guestpassword)
+- **RabbitMQ Management**: http://localhost:15672 (login: guest / guestpassword)
 - **MongoDB**: localhost:27017
+- **Mongo Express UI**: http://localhost:8081 (login: admin / pass)
 
 ### 6. Shutting Down
 
@@ -190,6 +193,7 @@ The application provides UI for creating and managing orders, so you don't need 
 - **api**: Express.js API server
 - **worker**: Background order processor
 - **mongo**: MongoDB database
+- **mongo-express**: MongoDB web UI (Mongo Express)
 - **rabbitmq**: RabbitMQ message broker
 
 ### Port Mappings
@@ -197,6 +201,7 @@ The application provides UI for creating and managing orders, so you don't need 
 - Frontend: 3000 → 80 (container)
 - API: 3001 → 3001 (container)
 - MongoDB: 27017 → 27017 (container)
+- Mongo Express: 8081 → 8081 (container, web UI)
 - RabbitMQ:
   - 5672 → AMQP protocol (used by API and Worker)
   - 15672 → Management UI (http://localhost:15672)
