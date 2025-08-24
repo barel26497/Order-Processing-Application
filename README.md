@@ -91,6 +91,12 @@ CORS_ORIGIN=http://localhost:3000
 # Start the Application in detached mode
 docker compose up --build -d
 ```
+Note: If you encounter MongoServerError: Authentication failed, run the command below before docker compose up -d --build:
+
+```bash
+docker compose down -v
+```
+This removes old MongoDB volumes so that the root user is recreated on the next startup.
 
 ### 5. Access the Application
 
